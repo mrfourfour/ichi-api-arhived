@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  mlt_user:
+    image: mysql:8
+    volumes:
+      - $HOME/mnt/mysql:/var/lib/mysql
+      - ./init.d/:/docker-entrypoint-initdb.d/
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+    ports:
+      - "3306:3306"
