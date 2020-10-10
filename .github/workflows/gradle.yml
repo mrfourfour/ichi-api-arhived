@@ -17,7 +17,7 @@ jobs:
       with:
         java-version: 11
     - name: Setup Docker Image
-      run: docker-compose -f tools/docker-compose.yml
+      run: docker-compose -f ./tools/ci/docker-compose.yml up -d
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
