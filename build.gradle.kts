@@ -1,5 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+apply(plugin ="groovy")
+
 plugins {
     id("org.springframework.boot") version "2.3.4.RELEASE"
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
@@ -35,10 +37,18 @@ dependencies {
     }
     testImplementation("org.springframework.kafka:spring-kafka-test")
     testImplementation("org.springframework.security:spring-security-test")
+
+    // spock
+    testImplementation("org.spockframework:spock-core:2.0-M3-groovy-2.5")
+    testImplementation("org.spockframework:spock-bom:2.0-M3-groovy-2.5")
+    testImplementation("org.spockframework:spock-spring:2.0-M3-groovy-2.5")
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
 }
 
 tasks.withType<KotlinCompile> {
