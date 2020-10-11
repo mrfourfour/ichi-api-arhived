@@ -1,6 +1,7 @@
 package com.mrfourfour.mylittleticket.user.token.representation
 
 import com.mrfourfour.mylittleticket.user.keycloak.application.Token
+import com.mrfourfour.mylittleticket.user.keycloak.application.TokenProvider
 import com.mrfourfour.mylittleticket.user.token.application.LoginParameter
 import com.mrfourfour.mylittleticket.user.token.application.UserService
 import org.springframework.web.bind.annotation.PostMapping
@@ -9,7 +10,8 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class UserController(
-        private val userService: UserService
+        private val userService: UserService,
+        private val tokenProvider: TokenProvider
 ) {
 
     /**
@@ -26,14 +28,16 @@ class UserController(
 
     /**
      * 사용자는 이곳을 통해 토큰을 갱신한다.
-     * 사용자는
+     * 갱신이 정상적으로 진행되면 oauth access token을 반환한다.
      */
     @PostMapping("/token/refresh")
-    fun refreshToken(@RequestBody refreshTokenPayload: RefreshTokenPayload) {
+    fun refreshToken(@RequestBody refreshTokenPayload: RefreshTokenPayload) =
+            refresh(refreshTokenPayload)
 
-    }
+    private fun refresh(refreshTokenPayload: RefreshTokenPayload): Token? =
+            tokenProvider.refresh(refreshTokenPayload.refreshToken)
+
     /**
-     * 사용자는 이곳을 통해 로그인을 시도한다.
      * 티켓 이용자, 판매자는 이 곳을 통해 회원가입을 시도할 수 있다.
      * 회원가입이 진행되고 나면 서버에서 자동으로 로그인을 시도하며,
      * 인증이 완료되면 oauth access token을 반환한다.

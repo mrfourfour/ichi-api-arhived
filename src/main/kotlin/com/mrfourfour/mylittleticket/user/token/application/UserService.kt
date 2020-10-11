@@ -14,7 +14,4 @@ class UserService(
         val tokenRequest = TokenRequest(loginParameter.username, loginParameter.password)
         return tokenProvider.issue(tokenRequest)
     }
-
-    fun refreshToken(refreshToken: String) = tokenProvider.refresh(refreshToken)
-
 }
