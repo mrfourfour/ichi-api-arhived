@@ -71,7 +71,6 @@ class KeyCloakWebClientConfig {
             keycloakSpringBootProperties: KeycloakSpringBootProperties
     ): WebClient {
         val baseUrl = getBaseUrl(keycloakSpringBootProperties)
-        logger.debug("baseUrl: {}", baseUrl)
         return WebClient
                 .builder()
                 .baseUrl(baseUrl)

@@ -12,8 +12,8 @@ class TokenController(
 
     @GetMapping("/user/me")
     fun getMe(): KeycloakPrincipal<*> {
-        val user = principalService.getUserPrincipal()
-        return user
+        val userPrincipal = principalService.getUserPrincipal()
+        return userPrincipal
     }
 
 
