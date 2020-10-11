@@ -25,11 +25,8 @@ class KeycloakTokenProvider(
         val (username, password) = tokenRequest
         val resource = keycloakSpringBootProperties.resource
         val clientSecret = keycloakSpringBootProperties.credentials["secret"] as String
-        logger.debug ("resource: {}, clientSecret: {}", resource, clientSecret)
         val formData = createFormData(resource, clientSecret, username, password)
-        val result = fetchResource(formData)
-        logger.debug("result: {}", result)
-        return result
+        return fetchResource(formData)
     }
 
     override fun refresh(refreshToken: String): Token? {
