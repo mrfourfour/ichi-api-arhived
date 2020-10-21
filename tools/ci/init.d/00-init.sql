@@ -1,0 +1,1 @@
+CREATE DATABASE `mlt_user_test`;
