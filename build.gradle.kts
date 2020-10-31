@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootJar
+import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
 
 plugins {
     base
@@ -38,9 +39,15 @@ subprojects {
         }
     }
 
+    configure<DependencyManagementExtension> {
+        imports {
+            mavenBom("org.keycloak.bom:keycloak-adapter-bom:11.0.2")
+        }
+    }
+
     dependencies {
         implementation(kotlin("reflect"))
-        implementation("org.keycloak:keycloak-spring-boot-starter:11.0.2")
+        implementation("org.keycloak:keycloak-spring-boot-starter")
         implementation("org.springframework.boot:spring-boot-starter-web")
         implementation("org.springframework.boot:spring-boot-starter-security")
         implementation("org.springframework.boot:spring-boot-starter-web")
