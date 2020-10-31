@@ -42,8 +42,19 @@ class KeycloakTokenProvider(
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                     .body(formData)
                     .retrieve()
+                    .onStatus({ status -> status.is4xxClientError }) {
+                        // TODO 적절한 예외로 만들기
+                        it
+                                .bodyToMono(String::class.java)
+                                .map { IllegalArgumentException("Not authorized: $it") }
+                    }
+                    .onStatus({ status -> status.is5xxServerError }) {
+                        // TODO 적절한 예외로 만들기
+                        it
+                                .bodyToMono(String::class.java)
+                                .map { IllegalArgumentException("Keycloak Server error: $it") }
+                    }
                     .bodyToMono<Token>(Token::class.java)
-                    .onErrorMap { throw IllegalArgumentException("message", it) }
                     .block()
 
     private fun createFormData(resource: String, clientSecret: String, username: String, password: String): BodyInserters.FormInserter<String> {
