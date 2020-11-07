@@ -1,11 +1,16 @@
 package com.mrfourfour.ichi.keycloak.infrastructure
 
+import com.mrfourfour.ichi.keycloak.application.CreateUserFailedException
 import com.mrfourfour.ichi.keycloak.application.Token
 import com.mrfourfour.ichi.keycloak.application.TokenProvider
 import com.mrfourfour.ichi.keycloak.application.TokenRequest
 import mu.KLogging
 import org.apache.http.HttpHeaders
 import org.keycloak.adapters.springboot.KeycloakSpringBootProperties
+import org.keycloak.admin.client.Keycloak
+import org.keycloak.admin.client.KeycloakBuilder
+import org.keycloak.representations.idm.CredentialRepresentation
+import org.keycloak.representations.idm.UserRepresentation
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -13,12 +18,14 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
+import javax.ws.rs.core.Response
 
 @Component
 class KeycloakTokenProvider(
         @Qualifier("keycloakWebClient")
         private val webClient: WebClient,
-        private val keycloakSpringBootProperties: KeycloakSpringBootProperties
+        private val keycloakSpringBootProperties: KeycloakSpringBootProperties,
+        private val keycloakAdminClient: Keycloak
 ) : TokenProvider {
 
     override fun issue(tokenRequest: TokenRequest): Token? {
@@ -71,11 +78,54 @@ class KeycloakTokenProvider(
                 .with("grant_type", "refresh_token")
     }
 
-    companion object: KLogging()
+    override fun signUp(tokenRequest: TokenRequest) {
+        val userResources = keycloakAdminClient
+                .realm(keycloakSpringBootProperties.realm)
+                .users()
+        val userRepresentation = getUserRepresentation(tokenRequest)
+        val createUserResponse = userResources
+                .create(userRepresentation)
+        if (createUserResponse.statusInfo != Response.Status.CREATED) {
+            throw CreateUserFailedException()
+        }
+    }
+
+    private fun getUserRepresentation(tokenRequest: TokenRequest) =
+            UserRepresentation().apply {
+                email = tokenRequest.username
+                username = tokenRequest.username
+                credentials = listOf(
+                        CredentialRepresentation().apply {
+                            isEnabled = true
+                            isEmailVerified = true
+                            type = CredentialRepresentation.PASSWORD
+                            value = tokenRequest.password
+                            isTemporary = false
+                        }
+                )
+                clientRoles = mapOf(
+                        Pair(keycloakSpringBootProperties.resource, listOf(ROLE_ICHI_USER))
+                )
+            }
+
+    companion object: KLogging() {
+        private const val ROLE_ICHI_USER = "role_ichi_user"
+    }
 }
 
 @Configuration
 class KeyCloakWebClientConfig {
+
+    @Bean
+    fun keycloakAdminClient(
+            keycloakSpringBootProperties: KeycloakSpringBootProperties
+    ): Keycloak = KeycloakBuilder.builder()
+            .serverUrl(keycloakSpringBootProperties.authServerUrl)
+            .realm(keycloakSpringBootProperties.realm)
+            .clientId(keycloakSpringBootProperties.resource)
+            .clientSecret(keycloakSpringBootProperties.credentials["secret"] as String)
+            .grantType("client_credentials")
+            .build()
 
     @Bean
     fun keycloakWebClient(
