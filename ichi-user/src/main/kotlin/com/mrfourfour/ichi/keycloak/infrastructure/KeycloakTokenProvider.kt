@@ -92,8 +92,8 @@ class KeycloakTokenProvider(
 
     private fun getUserRepresentation(tokenRequest: TokenRequest) =
             UserRepresentation().apply {
-                email = tokenRequest.username
-                username = tokenRequest.username
+                email = tokenRequest.email
+                username = tokenRequest.email
                 credentials = listOf(
                         CredentialRepresentation().apply {
                             isEnabled = true

@@ -52,10 +52,10 @@ class UserController(
 }
 
 data class LoginRequest(
-       val username: String,
-       val password: String
+        val email: String,
+        val password: String
 ) {
-    fun to() = LoginParameter(username, password)
+    fun to() = LoginParameter(email, password)
 }
 
 data class RefreshTokenPayload(
