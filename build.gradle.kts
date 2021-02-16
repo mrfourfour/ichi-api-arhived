@@ -41,7 +41,7 @@ subprojects {
 
     configure<DependencyManagementExtension> {
         imports {
-            mavenBom("org.keycloak.bom:keycloak-adapter-bom:11.0.2")
+            mavenBom("org.keycloak.bom:keycloak-adapter-bom:11.0.3")
         }
     }
 

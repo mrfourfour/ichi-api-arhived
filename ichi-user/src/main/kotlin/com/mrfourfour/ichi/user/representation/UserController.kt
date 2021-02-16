@@ -2,6 +2,7 @@ package com.mrfourfour.ichi.user.representation
 
 import com.mrfourfour.ichi.keycloak.application.Token
 import com.mrfourfour.ichi.keycloak.application.TokenProvider
+import com.mrfourfour.ichi.user.application.SignUpParameter
 import com.mrfourfour.ichi.user.application.LoginParameter
 import com.mrfourfour.ichi.user.application.UserService
 import org.springframework.web.bind.annotation.PostMapping
@@ -41,26 +42,32 @@ class UserController(
      * 티켓 이용자, 판매자는 이 곳을 통해 회원가입을 시도할 수 있다.
      * 회원가입이 진행되고 나면 서버에서 자동으로 로그인을 시도하며,
      * 인증이 완료되면 oauth access token을 반환한다.
-     * @param signupRequest 회원가입을 할 때 필요한 요청
+     * @param signUpRequest 회원가입을 할 때 필요한 요청
      */
     @PostMapping("/sign-up")
-    fun signUp(@RequestBody signupRequest: SignUpRequest): LoginResponse {
-        return LoginResponse()
+    fun signUp(@RequestBody signUpRequest: SignUpRequest): LoginResponse {
+        val token = userService.signUp(signUpRequest.to())
+        return LoginResponse(token)
     }
 }
 
 data class LoginRequest(
-       val username: String,
-       val password: String
+        val email: String,
+        val password: String
 ) {
-    fun to() = LoginParameter(username, password)
+    fun to() = LoginParameter(email, password)
 }
 
 data class RefreshTokenPayload(
         val refreshToken: String
 )
 
-class SignUpRequest
+data class SignUpRequest(
+        val email: String,
+        val password: String
+) {
+    fun to() = SignUpParameter(email, password)
+}
 
 data class LoginResponse (
         val token: Token? = null

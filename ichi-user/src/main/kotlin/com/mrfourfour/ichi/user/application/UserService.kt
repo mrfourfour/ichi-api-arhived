@@ -11,7 +11,13 @@ class UserService(
 ) {
 
     fun login(loginParameter: LoginParameter): Token? {
-        val tokenRequest = TokenRequest(loginParameter.username, loginParameter.password)
+        val tokenRequest = TokenRequest(loginParameter.email, loginParameter.password)
+        return tokenProvider.issue(tokenRequest)
+    }
+
+    fun signUp(signUpParameter: SignUpParameter): Token? {
+        val tokenRequest = TokenRequest(signUpParameter.email, signUpParameter.password)
+        tokenProvider.signUp(tokenRequest)
         return tokenProvider.issue(tokenRequest)
     }
 }
