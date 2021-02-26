@@ -22,23 +22,23 @@ import javax.ws.rs.core.Response
 
 @Component
 class KeycloakTokenProvider(
-        @Qualifier("keycloakWebClient")
+    @Qualifier("keycloakWebClient")
         private val webClient: WebClient,
-        private val keycloakSpringBootProperties: KeycloakSpringBootProperties,
-        private val keycloakAdminClient: Keycloak
+    private val properties: KeycloakSpringBootProperties,
+    private val keycloakAdminClient: Keycloak
 ) : TokenProvider {
 
     override fun issue(tokenRequest: TokenRequest): Token? {
         val (username, password) = tokenRequest
-        val resource = keycloakSpringBootProperties.resource
-        val clientSecret = keycloakSpringBootProperties.credentials["secret"] as String
+        val resource = properties.resource
+        val clientSecret = properties.credentials["secret"] as String
         val formData = createFormData(resource, clientSecret, username, password)
         return fetchResource(formData)
     }
 
     override fun refresh(refreshToken: String): Token? {
-        val resource = keycloakSpringBootProperties.resource
-        val clientSecret = keycloakSpringBootProperties.credentials["secret"] as String
+        val resource = properties.resource
+        val clientSecret = properties.credentials["secret"] as String
         val createFormData = createFormData(resource, clientSecret, refreshToken)
         return fetchResource(createFormData)
     }
@@ -80,7 +80,7 @@ class KeycloakTokenProvider(
 
     override fun signUp(tokenRequest: TokenRequest) {
         val userResources = keycloakAdminClient
-                .realm(keycloakSpringBootProperties.realm)
+                .realm(properties.realm)
                 .users()
         val userRepresentation = getUserRepresentation(tokenRequest)
         val createUserResponse = userResources
@@ -104,7 +104,7 @@ class KeycloakTokenProvider(
                         }
                 )
                 clientRoles = mapOf(
-                        Pair(keycloakSpringBootProperties.resource, listOf(ROLE_ICHI_USER))
+                        Pair(properties.resource, listOf(ROLE_ICHI_USER))
                 )
             }
 
@@ -118,29 +118,29 @@ class KeyCloakWebClientConfig {
 
     @Bean
     fun keycloakAdminClient(
-            keycloakSpringBootProperties: KeycloakSpringBootProperties
+        properties: KeycloakSpringBootProperties
     ): Keycloak = KeycloakBuilder.builder()
-            .serverUrl(keycloakSpringBootProperties.authServerUrl)
-            .realm(keycloakSpringBootProperties.realm)
-            .clientId(keycloakSpringBootProperties.resource)
-            .clientSecret(keycloakSpringBootProperties.credentials["secret"] as String)
+            .serverUrl(properties.authServerUrl)
+            .realm(properties.realm)
+            .clientId(properties.resource)
+            .clientSecret(properties.credentials["secret"] as? String)
             .grantType("client_credentials")
             .build()
 
     @Bean
     fun keycloakWebClient(
-            keycloakSpringBootProperties: KeycloakSpringBootProperties
+        properties: KeycloakSpringBootProperties
     ): WebClient {
-        val baseUrl = getBaseUrl(keycloakSpringBootProperties)
+        val baseUrl = getBaseUrl(properties)
         return WebClient
                 .builder()
                 .baseUrl(baseUrl)
                 .build()
     }
 
-    private fun getBaseUrl(keycloakSpringBootProperties: KeycloakSpringBootProperties) =
-            "${keycloakSpringBootProperties.authServerUrl}/realms/" +
-                    "${keycloakSpringBootProperties.realm}/protocol/openid-connect"
+    private fun getBaseUrl(properties: KeycloakSpringBootProperties) =
+            "${properties.authServerUrl}/realms/" +
+                    "${properties.realm}/protocol/openid-connect"
 
     companion object: KLogging()
 }
