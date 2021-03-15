@@ -1,6 +1,6 @@
 package com.mrfourfour.ichi.user.application
 
-import com.mrfourfour.ichi.keycloak.application.CreateUserFailedException
+import com.mrfourfour.ichi.keycloak.application.DuplicateUserSignUpException
 import com.mrfourfour.ichi.keycloak.application.TokenProvider
 import spock.lang.Specification
 
@@ -46,12 +46,12 @@ class UserServiceSpec extends Specification {
         SignUpParameter signUpParameter = new SignUpParameter(
                 "hello", "world"
         )
-        tokenProvider.signUp(*_) >> { throw new CreateUserFailedException() }
+        tokenProvider.signUp(*_) >> { throw new DuplicateUserSignUpException() }
 
         when:
         sut.signUp(signUpParameter)
 
         then:
-        thrown(CreateUserFailedException.class)
+        thrown(DuplicateUserSignUpException.class)
     }
 }
