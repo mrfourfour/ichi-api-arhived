@@ -1,9 +1,6 @@
 package com.mrfourfour.ichi.keycloak.infrastructure
 
-import com.mrfourfour.ichi.keycloak.application.CreateUserFailedException
-import com.mrfourfour.ichi.keycloak.application.Token
-import com.mrfourfour.ichi.keycloak.application.TokenProvider
-import com.mrfourfour.ichi.keycloak.application.TokenRequest
+import com.mrfourfour.ichi.keycloak.application.*
 import mu.KLogging
 import org.apache.http.HttpHeaders
 import org.keycloak.adapters.springboot.KeycloakSpringBootProperties
@@ -85,8 +82,10 @@ class KeycloakTokenProvider(
         val userRepresentation = getUserRepresentation(tokenRequest)
         val createUserResponse = userResources
                 .create(userRepresentation)
-        if (createUserResponse.statusInfo != Response.Status.CREATED) {
-            throw CreateUserFailedException()
+        val statusInfo = createUserResponse.statusInfo
+        when (statusInfo) {
+            Response.Status.CONFLICT -> throw DuplicateUserSignUpException()
+            Response.Status.FORBIDDEN -> throw IllegalArgumentException("keycloak configuration")
         }
     }
 

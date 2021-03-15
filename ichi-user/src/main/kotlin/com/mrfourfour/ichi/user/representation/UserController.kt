@@ -69,6 +69,6 @@ data class SignUpRequest(
     fun to() = SignUpParameter(email, password)
 }
 
-data class LoginResponse (
+data class LoginResponse(
         val token: Token? = null
 )
