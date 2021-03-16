@@ -74,10 +74,19 @@ project(":ichi-server") {
     val implementation by configurations
     dependencies {
         implementation(project(":ichi-user"))
+        implementation(project(":ichi-friendship"))
     }
 }
 
 project(":ichi-user") {
+    val jar: Jar by tasks
+    val bootJar: BootJar by tasks
+
+    bootJar.enabled = false
+    jar.enabled = true
+}
+
+project(":ichi-friendship") {
     val jar: Jar by tasks
     val bootJar: BootJar by tasks
 
