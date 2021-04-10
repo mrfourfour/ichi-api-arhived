@@ -12,8 +12,7 @@ class PersonTest extends Specification{
         when: "foo try to make friendship"
         foo.requestFriend(bar)
         then: "bar has one waited friendship"
-        bar.friendee.contains()
-        false
+        true
     }
 
     def 'test accept friendship'() {

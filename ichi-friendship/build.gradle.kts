@@ -1,13 +1,19 @@
 plugins {
     groovy
     kotlin("jvm")
-}
 
-repositories {
-    mavenCentral()
 }
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("org.springframework.boot:spring-boot-starter-data-neo4j")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.4.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.3")
+
+
+    implementation("com.arangodb:arangodb-java-driver:6.10.0")
+    implementation("com.arangodb:velocypack-module-jdk8:1.1.0")
+
+    testImplementation("org.testcontainers:testcontainers:1.15.2")
+    testImplementation("org.testcontainers:spock:1.15.2")
 }
