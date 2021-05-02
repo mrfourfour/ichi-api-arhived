@@ -1,9 +1,13 @@
-package com.mrfourfour.ichi.friendship.domain
+package com.mrfourfour.ichi.friendship.domain.friendship
+
+import com.mrfourfour.ichi.friendship.domain.user.User
 
 class Friendship(
-    val user: User
+    val from: User,
+    val to: User
 ) {
-    private val id: Long = 0
+    var id: Long = 0
+        internal set
 
     /**
      * When friendship create first, start from waited state.
@@ -13,7 +17,7 @@ class Friendship(
     val isFriend: Boolean
         get() = true
 
-    private enum class State{
+    private enum class State {
         FRIEND,
         WAITED
     }

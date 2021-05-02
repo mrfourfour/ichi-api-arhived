@@ -1,7 +1,8 @@
-package com.mrfourfour.ichi.friendship.infrastructure
+package com.mrfourfour.ichi.friendship.infrastructure.config
 
 import com.arangodb.async.ArangoDBAsync
 import com.arangodb.entity.EdgeDefinition
+import com.arangodb.model.CollectionCreateOptions
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.runBlocking
 import mu.KLogging

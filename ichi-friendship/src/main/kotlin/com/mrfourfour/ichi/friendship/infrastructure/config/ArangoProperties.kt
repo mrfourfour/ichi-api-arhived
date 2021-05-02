@@ -1,4 +1,4 @@
-package com.mrfourfour.ichi.friendship.infrastructure
+package com.mrfourfour.ichi.friendship.infrastructure.config
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding

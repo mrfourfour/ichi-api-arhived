@@ -1,5 +1,6 @@
 package com.mrfourfour.ichi.friendship.domain
 
+import com.mrfourfour.ichi.friendship.domain.user.User
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested

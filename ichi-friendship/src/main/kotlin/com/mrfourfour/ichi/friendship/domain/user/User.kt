@@ -1,5 +1,6 @@
-package com.mrfourfour.ichi.friendship.domain
+package com.mrfourfour.ichi.friendship.domain.user
 
+import com.mrfourfour.ichi.friendship.domain.friendship.Friendship
 import java.util.*
 
 class User(
@@ -11,13 +12,11 @@ class User(
     private val friendee: MutableList<Friendship> = mutableListOf()
 
     fun requestFriends(peer: User) {
-        val friendship = Friendship(peer)
+        val friendship = Friendship(this, peer)
         friends.add(friendship)
     }
 
     fun acceptFriendsaddFollower(user: User) {
-        this.friends.add(Friendship(user))
-        user.friends.add(Friendship(this))
     }
 
     override fun equals(other: Any?): Boolean {

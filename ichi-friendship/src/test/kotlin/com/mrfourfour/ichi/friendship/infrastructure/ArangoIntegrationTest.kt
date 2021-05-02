@@ -1,6 +1,9 @@
 package com.mrfourfour.ichi.friendship.infrastructure
 
 import com.arangodb.async.ArangoDBAsync
+import com.mrfourfour.ichi.friendship.infrastructure.config.ArangoConfig
+import com.mrfourfour.ichi.friendship.infrastructure.config.ArangoMigration
+import com.mrfourfour.ichi.friendship.infrastructure.config.ArangoProperties
 import org.amshove.kluent.shouldBeTrue
 import org.amshove.kluent.shouldNotBeNull
 import org.junit.jupiter.api.BeforeEach
@@ -10,12 +13,12 @@ import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 
 @Testcontainers
-class ArangoIntegrationTest {
+abstract class ArangoIntegrationTest {
 
     protected lateinit var arango: ArangoDBAsync
 
     @BeforeEach
-    fun setup() {
+    open fun setup() {
         val factory = ArangoConfig()
         val arango = factory.arango(
             ArangoProperties(
@@ -28,6 +31,7 @@ class ArangoIntegrationTest {
             )
         )
         this.arango = arango
+        ArangoMigration(arango)
     }
 
 
