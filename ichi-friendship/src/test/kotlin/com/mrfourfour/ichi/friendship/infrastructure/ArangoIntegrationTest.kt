@@ -47,8 +47,7 @@ class ArangoIntegrationTest {
     }
 
     companion object {
-        @JvmField
         @Container
-        protected val ARANGO_CONTAINER = ArangoContainer()
+        private val ARANGO_CONTAINER = ArangoContainer()
     }
 }

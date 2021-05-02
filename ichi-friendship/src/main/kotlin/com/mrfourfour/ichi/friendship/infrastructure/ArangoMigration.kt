@@ -1,6 +1,5 @@
 package com.mrfourfour.ichi.friendship.infrastructure
 
-import com.arangodb.ArangoDB
 import com.arangodb.async.ArangoDBAsync
 import com.arangodb.entity.EdgeDefinition
 import kotlinx.coroutines.future.await
