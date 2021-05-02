@@ -80,20 +80,39 @@ subprojects {
 project(":ichi-server") {
     val api by configurations
     dependencies {
+        api(project(":ichi-common"))
         api(project(":ichi-user"))
         api(project(":ichi-friendship"))
     }
 }
 
 project(":ichi-user") {
+    val api by configurations
     val jar: Jar by tasks
     val bootJar: BootJar by tasks
 
     bootJar.enabled = false
     jar.enabled = true
+
+    dependencies {
+        api(project(":ichi-common"))
+    }
 }
 
 project(":ichi-friendship") {
+    val api by configurations
+    val jar: Jar by tasks
+    val bootJar: BootJar by tasks
+
+    bootJar.enabled = false
+    jar.enabled = true
+
+    dependencies {
+        api(project(":ichi-common"))
+    }
+}
+
+project(":ichi-common") {
     val jar: Jar by tasks
     val bootJar: BootJar by tasks
 

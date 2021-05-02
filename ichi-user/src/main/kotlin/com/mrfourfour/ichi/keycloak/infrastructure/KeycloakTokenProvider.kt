@@ -1,6 +1,7 @@
 package com.mrfourfour.ichi.keycloak.infrastructure
 
 import com.mrfourfour.ichi.keycloak.application.*
+import com.mrfourfour.ichi.user.domain.UserId
 import mu.KLogging
 import org.apache.http.HttpHeaders
 import org.keycloak.adapters.springboot.KeycloakSpringBootProperties
@@ -15,6 +16,8 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.bodyToMono
+import java.util.*
 import javax.ws.rs.core.Response
 
 @Component
@@ -58,7 +61,7 @@ class KeycloakTokenProvider(
                                 .bodyToMono(String::class.java)
                                 .map { IllegalArgumentException("Keycloak Server error: $it") }
                     }
-                    .bodyToMono<Token>(Token::class.java)
+                    .bodyToMono<Token>()
                     .block()
 
     private fun createFormData(resource: String, clientSecret: String, username: String, password: String): BodyInserters.FormInserter<String> {
@@ -75,11 +78,12 @@ class KeycloakTokenProvider(
                 .with("grant_type", "refresh_token")
     }
 
-    override fun signUp(tokenRequest: TokenRequest) {
+    override fun signUp(tokenRequest: TokenRequest): UserId {
         val userResources = keycloakAdminClient
                 .realm(properties.realm)
                 .users()
-        val userRepresentation = getUserRepresentation(tokenRequest)
+        val uuid = UUID.randomUUID().toString()
+        val userRepresentation = getUserRepresentation(uuid, tokenRequest)
         val createUserResponse = userResources
                 .create(userRepresentation)
         val statusInfo = createUserResponse.statusInfo
@@ -87,10 +91,13 @@ class KeycloakTokenProvider(
             Response.Status.CONFLICT -> throw DuplicateUserSignUpException()
             Response.Status.FORBIDDEN -> throw IllegalArgumentException("keycloak configuration")
         }
+
+        return UserId(uuid)
     }
 
-    private fun getUserRepresentation(tokenRequest: TokenRequest) =
+    private fun getUserRepresentation(uuid: String, tokenRequest: TokenRequest) =
             UserRepresentation().apply {
+                id = uuid
                 email = tokenRequest.email
                 username = tokenRequest.email
                 credentials = listOf(
