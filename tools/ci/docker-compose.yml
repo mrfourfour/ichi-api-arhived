@@ -1,8 +1,8 @@
 version: '3'
 
 services:
-  mlt_user:
-    image: mysql:8
+  ichi_mysql:
+    image: mariadb:10
     volumes:
       - $HOME/mnt/mysql:/var/lib/mysql
       - ./init.d/:/docker-entrypoint-initdb.d/
@@ -10,3 +10,10 @@ services:
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
     ports:
       - "3306:3306"
+  ichi_neo4j:
+    image: neo4j:4.2.0
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/s3cr3t

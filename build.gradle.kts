@@ -4,11 +4,12 @@ import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
 
 plugins {
     base
-    id("org.springframework.boot") version "2.3.4.RELEASE" apply false
+    id("org.springframework.boot") version "2.4.3" apply false
     id("io.spring.dependency-management") version "1.0.10.RELEASE" apply false
-    kotlin("jvm") version "1.3.72" apply false
-    kotlin("plugin.spring") version "1.3.72" apply false
-    kotlin("plugin.jpa") version "1.3.72" apply false
+
+    kotlin("jvm") version "1.4.31" apply false
+    kotlin("plugin.spring") version "1.4.31" apply false
+    kotlin("plugin.jpa") version "1.4.31" apply false
 }
 
 allprojects {
@@ -42,6 +43,7 @@ subprojects {
     configure<DependencyManagementExtension> {
         imports {
             mavenBom("org.keycloak.bom:keycloak-adapter-bom:11.0.3")
+            mavenBom("org.testcontainers:testcontainers-bom:1.15.3")
         }
     }
 
@@ -53,13 +55,22 @@ subprojects {
         implementation("org.springframework.boot:spring-boot-starter-web")
         implementation("org.springframework.boot:spring-boot-starter-webflux")
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.4.3")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.3")
         implementation("io.github.microutils:kotlin-logging:1.12.0")
-        testImplementation("org.spockframework:spock-core:2.0-M3-groovy-2.5")
-        testImplementation("org.spockframework:spock-bom:2.0-M3-groovy-2.5")
-        testImplementation("org.spockframework:spock-spring:2.0-M3-groovy-2.5")
         testImplementation("org.springframework.boot:spring-boot-starter-test") {
             exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
         }
+        testImplementation("org.jetbrains.kotlin:kotlin-test")
+        testImplementation("org.amshove.kluent:kluent:1.65")
+        testImplementation("org.testcontainers:testcontainers")
+        testImplementation("org.testcontainers:junit-jupiter")
+
+    }
+
+    repositories {
+        mavenCentral()
     }
 
     tasks.withType<Test> {
@@ -71,13 +82,42 @@ subprojects {
 }
 
 project(":ichi-server") {
-    val implementation by configurations
+    val api by configurations
     dependencies {
-        implementation(project(":ichi-user"))
+        api(project(":ichi-common"))
+        api(project(":ichi-user"))
+        api(project(":ichi-friendship"))
     }
 }
 
 project(":ichi-user") {
+    val api by configurations
+    val jar: Jar by tasks
+    val bootJar: BootJar by tasks
+
+    bootJar.enabled = false
+    jar.enabled = true
+
+    dependencies {
+        api(project(":ichi-common"))
+    }
+}
+
+project(":ichi-friendship") {
+    val api by configurations
+    val jar: Jar by tasks
+    val bootJar: BootJar by tasks
+
+    bootJar.enabled = false
+    jar.enabled = true
+
+    dependencies {
+        api(project(":ichi-common"))
+        api(project(":ichi-user"))
+    }
+}
+
+project(":ichi-common") {
     val jar: Jar by tasks
     val bootJar: BootJar by tasks
 
