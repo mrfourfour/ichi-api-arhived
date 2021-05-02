@@ -43,6 +43,7 @@ subprojects {
     configure<DependencyManagementExtension> {
         imports {
             mavenBom("org.keycloak.bom:keycloak-adapter-bom:11.0.3")
+            mavenBom("org.testcontainers:testcontainers-bom:1.15.3")
         }
     }
 
@@ -55,12 +56,13 @@ subprojects {
         implementation("org.springframework.boot:spring-boot-starter-webflux")
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
         implementation("io.github.microutils:kotlin-logging:1.12.0")
-        testImplementation("org.spockframework:spock-core:2.0-M3-groovy-2.5")
-        testImplementation("org.spockframework:spock-bom:2.0-M3-groovy-2.5")
-        testImplementation("org.spockframework:spock-spring:2.0-M3-groovy-2.5")
         testImplementation("org.springframework.boot:spring-boot-starter-test") {
             exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
         }
+        testImplementation("org.jetbrains.kotlin:kotlin-test")
+        testImplementation("org.amshove.kluent:kluent:1.65")
+        testImplementation("org.testcontainers:testcontainers")
+        testImplementation("org.testcontainers:junit-jupiter")
     }
 
     repositories {
@@ -76,10 +78,10 @@ subprojects {
 }
 
 project(":ichi-server") {
-    val implementation by configurations
+    val api by configurations
     dependencies {
-        implementation(project(":ichi-user"))
-        implementation(project(":ichi-friendship"))
+        api(project(":ichi-user"))
+        api(project(":ichi-friendship"))
     }
 }
 
