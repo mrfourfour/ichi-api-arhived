@@ -55,6 +55,9 @@ subprojects {
         implementation("org.springframework.boot:spring-boot-starter-web")
         implementation("org.springframework.boot:spring-boot-starter-webflux")
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.4.3")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.3")
         implementation("io.github.microutils:kotlin-logging:1.12.0")
         testImplementation("org.springframework.boot:spring-boot-starter-test") {
             exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
@@ -63,6 +66,7 @@ subprojects {
         testImplementation("org.amshove.kluent:kluent:1.65")
         testImplementation("org.testcontainers:testcontainers")
         testImplementation("org.testcontainers:junit-jupiter")
+
     }
 
     repositories {
@@ -109,6 +113,7 @@ project(":ichi-friendship") {
 
     dependencies {
         api(project(":ichi-common"))
+        api(project(":ichi-user"))
     }
 }
 
