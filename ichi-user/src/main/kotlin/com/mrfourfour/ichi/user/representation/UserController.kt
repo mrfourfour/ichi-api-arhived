@@ -1,10 +1,13 @@
 package com.mrfourfour.ichi.user.representation
 
+import com.mrfourfour.ichi.keycloak.application.DuplicateUserSignUpException
 import com.mrfourfour.ichi.keycloak.application.Token
 import com.mrfourfour.ichi.keycloak.application.TokenProvider
 import com.mrfourfour.ichi.user.application.SignUpParameter
 import com.mrfourfour.ichi.user.application.LoginParameter
 import com.mrfourfour.ichi.user.application.UserService
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -45,9 +48,13 @@ class UserController(
      * @param signUpRequest 회원가입을 할 때 필요한 요청
      */
     @PostMapping("/sign-up")
-    fun signUp(@RequestBody signUpRequest: SignUpRequest): LoginResponse {
-        val token = userService.signUp(signUpRequest.to())
-        return LoginResponse(token)
+    fun signUp(@RequestBody signUpRequest: SignUpRequest): ResponseEntity<String> {
+        return try {
+            val token = userService.signUp(signUpRequest.to())
+            ResponseEntity.status(HttpStatus.CREATED).build()
+        }catch (e: DuplicateUserSignUpException){
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Duplicated User")
+        }
     }
 }
 
@@ -64,7 +71,8 @@ data class RefreshTokenPayload(
 
 data class SignUpRequest(
         val email: String,
-        val password: String
+        val password: String,
+        val gender: String
 ) {
     fun to() = SignUpParameter(email, password)
 }
