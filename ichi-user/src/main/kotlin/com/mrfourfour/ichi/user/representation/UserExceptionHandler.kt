@@ -1,25 +1,21 @@
 package com.mrfourfour.ichi.user.representation
 
+import com.mrfourfour.ichi.keycloak.application.DuplicateUserSignUpException
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.ControllerAdvice
-import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.ResponseStatus
-import java.util.*
+import org.springframework.web.bind.annotation.*
 
 
-@ControllerAdvice
+@RestControllerAdvice
 class UserExceptionHandler {
 
-        @ExceptionHandler
-        @ResponseStatus
-        fun duplicateUserHandler(e : DuplicateFormatFlagsException) : ResponseEntity<ErrorCode> {
-            return ResponseEntity.status(HttpStatus.CREATED).body(ErrorCode("Duplicate User", "201"))
+        @ExceptionHandler(value = [DuplicateUserSignUpException::class])
+        @ResponseStatus(HttpStatus.BAD_REQUEST)
+        fun duplicateUserHandler(e : DuplicateUserSignUpException) : ErrorResponse {
+            return ErrorResponse("Duplicate User", "400")
         }
-
 }
 
-data class ErrorCode(
+data class ErrorResponse(
         var errorMessage: String,
         var errorCode: String
 )
