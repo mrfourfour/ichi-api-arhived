@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response
 class UserEmailChecker(
         private val keycloakAdminClient: Keycloak,
         private val properties: KeycloakSpringBootProperties
-) : EmailChecker{
+) : EmailChecker {
 
 
     override fun checkDuplicate(email: String) {
@@ -24,7 +24,7 @@ class UserEmailChecker(
                 .users()
         val resultInfo = userResources
                 .search(email)
-        if(resultInfo.size>0){
+        if (resultInfo.size > 0) {
             throw DuplicateUserSignUpException()
         }
     }

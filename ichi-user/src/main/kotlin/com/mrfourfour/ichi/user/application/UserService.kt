@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 @Service
 class UserService(
         private val tokenProvider: TokenProvider,
-        private val emailChecker :EmailChecker
+        private val emailChecker: EmailChecker
 ) {
 
     fun login(loginParameter: LoginParameter): Token? {
@@ -16,7 +16,7 @@ class UserService(
         return tokenProvider.issue(tokenRequest)
     }
 
-    fun signUp(signUpParameter: SignUpParameter){
+    fun signUp(signUpParameter: SignUpParameter) {
         val tokenRequest = TokenRequest(signUpParameter.email, signUpParameter.password)
         tokenProvider.signUp(tokenRequest)
     }

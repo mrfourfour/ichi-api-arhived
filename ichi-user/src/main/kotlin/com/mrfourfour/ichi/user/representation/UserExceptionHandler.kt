@@ -10,7 +10,7 @@ class UserExceptionHandler {
 
         @ExceptionHandler(value = [DuplicateUserSignUpException::class])
         @ResponseStatus(HttpStatus.BAD_REQUEST)
-        fun duplicateUserHandler(e : DuplicateUserSignUpException) : ErrorResponse {
+        fun duplicateUserHandler(e: DuplicateUserSignUpException) : ErrorResponse {
             return ErrorResponse("Duplicate User", "400")
         }
 }

@@ -50,12 +50,12 @@ class UserController(
      */
     @PostMapping("/sign-up")
     fun signUp(@RequestBody signUpRequest: SignUpRequest): ResponseEntity<Void> {
-            val token = userService.signUp(signUpRequest.to())
-            return ResponseEntity.status(HttpStatus.CREATED).build()
+        val token = userService.signUp(signUpRequest.to())
+        return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
     @PostMapping("/email-check")
-    fun checkEmailDuplicate(@RequestBody email : Email ) : ResponseEntity<Void>{
+    fun checkEmailDuplicate(@RequestBody email: Email): ResponseEntity<Void> {
         userService.checkDuplicate(email.email)
         return ResponseEntity.ok().build()
     }
@@ -71,7 +71,6 @@ data class LoginRequest(
 data class Email(
         var email: String
 )
-
 
 
 data class RefreshTokenPayload(
