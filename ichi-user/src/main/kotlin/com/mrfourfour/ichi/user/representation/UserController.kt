@@ -8,6 +8,7 @@ import com.mrfourfour.ichi.user.application.LoginParameter
 import com.mrfourfour.ichi.user.application.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -49,12 +50,8 @@ class UserController(
      */
     @PostMapping("/sign-up")
     fun signUp(@RequestBody signUpRequest: SignUpRequest): ResponseEntity<String> {
-        return try {
             val token = userService.signUp(signUpRequest.to())
-            ResponseEntity.status(HttpStatus.CREATED).build()
-        }catch (e: DuplicateUserSignUpException){
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Duplicated User")
-        }
+            return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 }
 
@@ -80,3 +77,4 @@ data class SignUpRequest(
 data class LoginResponse(
         val token: Token? = null
 )
+
