@@ -49,9 +49,15 @@ class UserController(
      * @param signUpRequest 회원가입을 할 때 필요한 요청
      */
     @PostMapping("/sign-up")
-    fun signUp(@RequestBody signUpRequest: SignUpRequest): ResponseEntity<String> {
+    fun signUp(@RequestBody signUpRequest: SignUpRequest): ResponseEntity<Void> {
             val token = userService.signUp(signUpRequest.to())
             return ResponseEntity.status(HttpStatus.CREATED).build()
+    }
+
+    @PostMapping("/email-check")
+    fun checkEmailDuplicate(@RequestBody email : Email ) : ResponseEntity<Void>{
+        userService.checkDuplicate(email.email)
+        return ResponseEntity.ok().build()
     }
 }
 
@@ -61,6 +67,12 @@ data class LoginRequest(
 ) {
     fun to() = LoginParameter(email, password)
 }
+
+data class Email(
+        var email: String
+)
+
+
 
 data class RefreshTokenPayload(
         val refreshToken: String
