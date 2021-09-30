@@ -21,7 +21,8 @@ class UserService(
         tokenProvider.signUp(tokenRequest)
     }
 
-    fun checkDuplicate(email: String) {
-        emailChecker.checkDuplicate(email)
+    fun checkDuplicate(email: String) : Boolean{
+            emailChecker.checkDuplicate(email)
+            return false;
     }
 }
