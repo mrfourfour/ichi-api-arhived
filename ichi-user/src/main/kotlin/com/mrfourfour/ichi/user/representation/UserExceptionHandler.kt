@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*
 class UserExceptionHandler {
 
         @ExceptionHandler(value = [DuplicateUserSignUpException::class])
-        @ResponseStatus(HttpStatus.BAD_REQUEST)
-        fun duplicateUserHandler(e: DuplicateUserSignUpException) : ErrorResponse {
-            return ErrorResponse("Duplicate User", "400")
+        @ResponseStatus(HttpStatus.OK)
+        fun duplicateUserHandler(e: DuplicateUserSignUpException) : Boolean {
+            return true;
         }
 }
 
