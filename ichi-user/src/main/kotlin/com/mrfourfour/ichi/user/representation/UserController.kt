@@ -26,9 +26,9 @@ class UserController(
      * @param loginRequest 토큰을 발급하기 위해 필요한 요청
      */
     @PostMapping("/login")
-    fun login(@RequestBody loginRequest: LoginRequest): LoginResponse {
+    fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<LoginResponse> {
         val token = userService.login(loginRequest.to())
-        return LoginResponse(token)
+        return ResponseEntity.ok(LoginResponse(token));
     }
 
     /**
@@ -51,13 +51,12 @@ class UserController(
     @PostMapping("/sign-up")
     fun signUp(@RequestBody signUpRequest: SignUpRequest): ResponseEntity<Void> {
         val token = userService.signUp(signUpRequest.to())
-        return ResponseEntity.status(HttpStatus.CREATED).build()
+        return ResponseEntity.ok().build()
     }
 
-    @PostMapping("/email-check")
-    fun checkEmailDuplicate(@RequestBody email: Email): ResponseEntity<Void> {
-        userService.checkDuplicate(email.email)
-        return ResponseEntity.ok().build()
+    @PostMapping("/email-duplicate-check")
+    fun checkEmailDuplicate(@RequestBody email: Email): ResponseEntity<Boolean> {
+        return ResponseEntity.ok(userService.checkDuplicate(email.email));
     }
 }
 
