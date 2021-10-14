@@ -11,7 +11,6 @@ class PrincipalService {
     fun getUserPrincipal(): KeycloakPrincipal<*> {
         val principal = SecurityContextHolder.getContext().authentication.principal
         if (principal is KeycloakPrincipal<*>) {
-            principal.keycloakSecurityContext.authorizationContext.permissions
             return principal
         }
         throw IllegalStateException("Not Authenticated from keycloak")
