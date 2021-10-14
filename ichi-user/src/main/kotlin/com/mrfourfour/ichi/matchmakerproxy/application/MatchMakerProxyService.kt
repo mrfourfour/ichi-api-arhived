@@ -10,9 +10,7 @@ class MatchMakerProxyService(
         private val matchMakerProxy: MatchMakerProxy
 ) {
 
-    fun request() {
-        val userId = SecurityContextHolder.getContext().getAuthentication().principal
+    fun request(userId : String) {
         matchMakerProxy.request(userId as String)
-
     }
 }
