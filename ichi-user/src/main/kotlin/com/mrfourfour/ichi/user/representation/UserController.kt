@@ -55,8 +55,8 @@ class UserController(
     }
 
     @PostMapping("/email-duplicate-check")
-    fun checkEmailDuplicate(@RequestBody email: Email): ResponseEntity<Boolean> {
-        return ResponseEntity.ok(userService.checkDuplicate(email.email));
+    fun checkEmailDuplicate(@RequestBody email: Email): ResponseEntity<DuplicateCheckResult> {
+        return ResponseEntity.ok(DuplicateCheckResult(userService.checkDuplicate(email.email)));
     }
 }
 
@@ -87,4 +87,10 @@ data class SignUpRequest(
 data class LoginResponse(
         val token: Token? = null
 )
+
+data class DuplicateCheckResult(
+        val duplicated: Boolean
+){
+    fun to() = DuplicateCheckResult(duplicated);
+}
 

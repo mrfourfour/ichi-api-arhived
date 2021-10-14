@@ -10,8 +10,8 @@ class UserExceptionHandler {
 
         @ExceptionHandler(value = [DuplicateUserSignUpException::class])
         @ResponseStatus(HttpStatus.OK)
-        fun duplicateUserHandler(e: DuplicateUserSignUpException) : Boolean {
-            return true;
+        fun duplicateUserHandler(e: DuplicateUserSignUpException) : DuplicateCheckResult {
+            return DuplicateCheckResult(true);
         }
 }
 
