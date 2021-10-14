@@ -40,7 +40,7 @@ class WebSecurityConfig: KeycloakWebSecurityConfigurerAdapter() {
 
 private fun HttpSecurity.disableCsrf() = csrf().disable()
 private fun HttpSecurity.authenticateRequest() = authorizeRequests()
-        .antMatchers("/login", "/token/refresh", "/health", "/sign-up")
+        .antMatchers("/login", "/token/refresh", "/health", "/sign-up", "/email-duplicate-check")
         .permitAll()
         .anyRequest()
         .authenticated()

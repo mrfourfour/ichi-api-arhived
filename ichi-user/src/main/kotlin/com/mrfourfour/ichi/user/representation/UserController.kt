@@ -1,10 +1,14 @@
 package com.mrfourfour.ichi.user.representation
 
+import com.mrfourfour.ichi.keycloak.application.DuplicateUserSignUpException
 import com.mrfourfour.ichi.keycloak.application.Token
 import com.mrfourfour.ichi.keycloak.application.TokenProvider
 import com.mrfourfour.ichi.user.application.SignUpParameter
 import com.mrfourfour.ichi.user.application.LoginParameter
 import com.mrfourfour.ichi.user.application.UserService
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -22,9 +26,9 @@ class UserController(
      * @param loginRequest 토큰을 발급하기 위해 필요한 요청
      */
     @PostMapping("/login")
-    fun login(@RequestBody loginRequest: LoginRequest): LoginResponse {
+    fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<LoginResponse> {
         val token = userService.login(loginRequest.to())
-        return LoginResponse(token)
+        return ResponseEntity.ok(LoginResponse(token));
     }
 
     /**
@@ -45,9 +49,14 @@ class UserController(
      * @param signUpRequest 회원가입을 할 때 필요한 요청
      */
     @PostMapping("/sign-up")
-    fun signUp(@RequestBody signUpRequest: SignUpRequest): LoginResponse {
+    fun signUp(@RequestBody signUpRequest: SignUpRequest): ResponseEntity<Void> {
         val token = userService.signUp(signUpRequest.to())
-        return LoginResponse(token)
+        return ResponseEntity.ok().build()
+    }
+
+    @PostMapping("/email-duplicate-check")
+    fun checkEmailDuplicate(@RequestBody email: Email): ResponseEntity<Boolean> {
+        return ResponseEntity.ok(userService.checkDuplicate(email.email));
     }
 }
 
@@ -58,13 +67,19 @@ data class LoginRequest(
     fun to() = LoginParameter(email, password)
 }
 
+data class Email(
+        var email: String
+)
+
+
 data class RefreshTokenPayload(
         val refreshToken: String
 )
 
 data class SignUpRequest(
         val email: String,
-        val password: String
+        val password: String,
+        val gender: String
 ) {
     fun to() = SignUpParameter(email, password)
 }
@@ -72,3 +87,4 @@ data class SignUpRequest(
 data class LoginResponse(
         val token: Token? = null
 )
+
