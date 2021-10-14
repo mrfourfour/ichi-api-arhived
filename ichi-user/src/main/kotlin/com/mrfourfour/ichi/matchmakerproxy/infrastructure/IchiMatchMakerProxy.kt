@@ -5,6 +5,7 @@ import org.apache.http.HttpHeaders
 
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
@@ -16,8 +17,8 @@ import java.lang.IllegalArgumentException
 
 @Component
 class IchiMatchMakerProxy(
-        @Qualifier("matchmakerWebClient")
-            private val webClient: WebClient
+    @Qualifier("matchMakerWebClient")
+        private val webClient: WebClient
 ) : MatchMakerProxy {
     override fun request(userId: String): HttpStatus? {
         val createFormData = createFormData(userId)
@@ -42,13 +43,23 @@ class IchiMatchMakerProxy(
 
     }
 
+
+
+}
+
+@Configuration
+class MatchMakerWebClientConfig{
+
     @Bean
-    fun matchmakerWebClient(
+    fun matchMakerWebClient(
     ): WebClient {
-        val baseUrl = ""
+        val baseUrl = getBaseUrl()
         return WebClient
                 .builder()
                 .baseUrl(baseUrl)
                 .build()
     }
+
+    private fun getBaseUrl() = "172.30.1.12:port/match/request"
+
 }
